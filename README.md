@@ -5,7 +5,7 @@
 ### Riešiteľ: 
 > Bc. Lukáš Pribula
 
-### Vyúčujúci predmetu: 
+### Vyučujúci predmetu: 
 > Mgr. Ing. Matúš Jókay, PhD.
 
 
