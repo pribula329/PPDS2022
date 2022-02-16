@@ -9,12 +9,14 @@ class Shared():
 
 
 def test(shared):
-    while shared.counter < shared.end:
+    while True:
+        if shared.counter >= shared.end:
+            break
         shared.elms[shared.counter] += 1
         shared.counter += 1
 
 
-shared = Shared(10000000)
+shared = Shared(100000000)
 
 t1 = Thread(test, shared)
 t2 = Thread(test, shared)
