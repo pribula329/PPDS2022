@@ -1,13 +1,13 @@
 from fei.ppds import Thread, Mutex
 from collections import Counter
 
+
 class Shared():
     def __init__(self, size, mutex):
         self.counter = 0
         self.end = size
         self.elms = [0] * size
         self.mutex = mutex
-
 
 
 def test(shared):

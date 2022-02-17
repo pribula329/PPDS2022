@@ -14,7 +14,7 @@ def test(shared):
     while True:
         if shared.counter >= shared.end:
             break
-        if shared.counter==0:
+        if shared.counter == 0:
             shared.mutex.lock()
             shared.elms[shared.counter] += 1
             shared.mutex.unlock()
@@ -22,7 +22,6 @@ def test(shared):
         else:
             shared.elms[shared.counter] += 1
         shared.counter += 1
-
 
 
 mutex = Mutex()
