@@ -25,7 +25,7 @@ def test(shared):
 
 
 mutex = Mutex()
-shared = Shared(10000000, mutex)
+shared = Shared(1000000, mutex)
 
 
 t1 = Thread(test, shared)
