@@ -24,6 +24,7 @@ def test(shared):
 mutex = Mutex()
 shared = Shared(1000000, mutex)
 
+
 t1 = Thread(test, shared)
 t2 = Thread(test, shared)
 t1.join()

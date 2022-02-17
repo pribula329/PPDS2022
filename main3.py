@@ -6,7 +6,7 @@ class Shared():
     def __init__(self, size, mutex):
         self.counter = 0
         self.end = size
-        self.elms = [0] * size
+        self.elms = [0] * (size + 1)
         self.mutex = mutex
 
 
@@ -21,7 +21,7 @@ def test(shared):
 
 
 mutex = Mutex()
-shared = Shared(1000000, mutex)
+shared = Shared(100000, mutex)
 
 
 t1 = Thread(test, shared)
