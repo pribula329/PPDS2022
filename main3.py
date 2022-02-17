@@ -20,7 +20,6 @@ def test(shared):
         shared.mutex.unlock()
 
 
-
 mutex = Mutex()
 shared = Shared(1000000, mutex)
 
