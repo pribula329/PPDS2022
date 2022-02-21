@@ -11,13 +11,12 @@ class Shared():
 
 
 def test(shared):
+    shared.mutex.lock()
     while True:
-        shared.mutex.lock()
         if shared.counter >= shared.end:
             shared.mutex.unlock()
             break
         shared.elms[shared.counter] += 1
-        shared.mutex.unlock()
         shared.counter += 1
 
 
