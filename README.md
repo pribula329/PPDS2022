@@ -24,7 +24,8 @@ Program implementuje dve vlákna, ktoré používajú spoločný index do spolo�
 Pridaním zámkov do kódu sme mali predísť tomu aby sa index v poli ikrementoval viac krát a pozorovať aký má vplyv na paralelné/konkurentné programovaie.
 
 > Program 1 (main1.py) 
-````def test(shared):
+````
+def test(shared):
     while True:
         shared.mutex.lock()
         if shared.counter >= shared.end:
@@ -36,3 +37,18 @@ Pridaním zámkov do kódu sme mali predísť tomu aby sa index v poli ikremento
 ````
 > Zámok sme na začiatku cyklu uzamkli a skontrolovali či sme sa nedostali mimo indexu. Následne sme inkrementovali index pola a zámok odomkli. Tým že sme použili zámok sme dosiahli že vlákna medzi sebou museli čakať
 a nemohli tak inkrementovať rovnaký index poľa naraz. Jednalo sa o konkurentné vyhodnocovanie medzi vláknami.
+> 
+> 
+> Program 2 (main2.py) 
+````
+def test(shared):
+    shared.mutex.lock()
+    while True:
+        if shared.counter >= shared.end:
+            shared.mutex.unlock()
+            break
+        shared.elms[shared.counter] += 1
+        shared.counter += 1
+````
+> Zámok sme uzamkli pred cyklom. Skontrolovali sme či sme sa nedostali mimo indexu. Následne sme inkrementovali index pola a zámok odomkli. Tým že sme použili zámok sme dosiahli že vlákna medzi sebou museli čakať
+a nemohli tak inkrementovať rovnaký index poľa naraz. V tomto prípade celý proces inkrementácie vykonalo jedno vlákno a druhé muselo čakať pokiaľ sa neinkrementovalo celé pole. Jednalo sa o konkurentné vyhodnocovanie medzi vláknami.
