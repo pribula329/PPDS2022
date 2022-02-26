@@ -1,6 +1,6 @@
 from random import randint
 from time import sleep
-from fei.ppds import Thread, Semaphore, Mutex, print
+from fei.ppds import Thread, Semaphore, Mutex, print, Event
 
 
 class SimpleBarrier:
@@ -8,16 +8,16 @@ class SimpleBarrier:
         self.N = N
         self.counter = 0
         self.mutex = Mutex()
-        self.turnstile = Semaphore(0)
+        self.event = Event()
 
     def wait(self):
         self.mutex.lock()
         self.counter += 1
         if self.counter == self.N:
             self.counter = 0
-            self.turnstile.signal(self.N)
+            self.event.set()
         self.mutex.unlock()
-        self.turnstile.wait()
+        self.event.wait()
 
 
 def rendezvous(thread_name):
@@ -42,4 +42,4 @@ sb1 = SimpleBarrier(5)
 sb2 = SimpleBarrier(5)
 
 threads = [Thread(barrier_example, sb1, sb2, i) for i in range(5)]
-[t.join for t in threads]
+[t.join() for t in threads]
