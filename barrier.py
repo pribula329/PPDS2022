@@ -12,6 +12,8 @@ class SimpleBarrier:
 
     def wait(self):
         self.mutex.lock()
+        if self.counter == 0:
+            self.event.clear()
         self.counter += 1
         if self.counter == self.N:
             self.counter = 0
