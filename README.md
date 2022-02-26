@@ -17,11 +17,11 @@
 ### Verzia Pythonu
 > 3.10 a 3.9
 ### Obsah
-Cieľom cvičenia 2 bolo implementovať/modifikovať dva úlohy/programy, ktoré boli predstavené na seminári predmetu PPDS.
+>Cieľom cvičenia 2 bolo implementovať/modifikovať dva úlohy/programy, ktoré boli predstavené na seminári predmetu PPDS.
 
-> Program 1 (barrier.py)
+> **Program 1 (barrier.py)**
 
-Cieľom prvej úlohy bolo modifikovať barrieru pomocou udalosti Event(). 
+>Cieľom prvej úlohy bolo modifikovať barrieru pomocou udalosti Event(). 
 Prv sme pracovali s triedou, ktorá sa nachádza nižšie
 ````
 class SimpleBarrier:
