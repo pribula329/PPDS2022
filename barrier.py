@@ -30,14 +30,16 @@ def ko(thread_name):
     sleep(randint(1, 10)/10)
 
 
-def barrier_example(barrier, thread_id):
-    sleep(randint(1, 10) / 10)
-    print("thread %d before barrier" % thread_id)
-    barrier.wait()
-    print("thread %d after barrier" % thread_id)
+def barrier_example(barrier1, barrier2, thread_id):
+    while True:
+        rendezvous(thread_id)
+        barrier1.wait()
+        ko(thread_id)
+        barrier2.wait()
 
 
-sb = SimpleBarrier(5)
+sb1 = SimpleBarrier(5)
+sb2 = SimpleBarrier(5)
 
-threads = [Thread(barrier_example, sb, i) for i in range(5)]
+threads = [Thread(barrier_example, sb1, sb2, i) for i in range(5)]
 [t.join for t in threads]
