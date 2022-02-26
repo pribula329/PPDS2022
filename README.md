@@ -17,7 +17,7 @@
 ### Verzia Pythonu
 > 3.10 a 3.9
 ### Obsah
->Cieľom cvičenia 2 bolo implementovať/modifikovať dva úlohy/programy, ktoré boli predstavené na seminári predmetu PPDS.
+Cieľom cvičenia 2 bolo implementovať/modifikovať dva úlohy/programy, ktoré boli predstavené na seminári predmetu PPDS.
 
 > **Program 1 (barrier.py)**
 
