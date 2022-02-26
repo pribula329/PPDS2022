@@ -6,11 +6,23 @@ from fei.ppds import Thread, Semaphore, Mutex, print
 class SimpleBarrier:
     def __init__(self, N):
         self.N = N
-        # ...
+        self.counter = 0
+        self.mutex = Mutex()
+        self.turnstile = Semaphore(0)
 
     def wait(self):
-        # ...
-        pass
+        self.mutex.lock()
+        self.counter += 1
+        if self.counter == self.N:
+            self.counter = 0
+            self.turnstile.signal(self.N)
+        self.mutex.unlock()
+        self.turnstile.wait()
+
+
+def rendezvous(thread_name):
+    sleep(randint(1,10)/10)
+    print('rendezvous: %s' % thread_name)
 
 
 def barrier_example(barrier, thread_id):
@@ -22,3 +34,5 @@ def barrier_example(barrier, thread_id):
 
 sb = SimpleBarrier(5)
 
+threads = [Thread(barrier_example, sb, i) for i in range(5)]
+[t.join for t in threads]
