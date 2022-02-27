@@ -4,6 +4,7 @@ from fei.ppds import Thread, Semaphore, Mutex, print, Event
 
 
 def fibonacci(i):
+    sleep(randint(1, 10)/10)
     fib[i+2] = fib[i+1] + fib[i]
 
 
