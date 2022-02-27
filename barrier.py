@@ -23,16 +23,33 @@ class SimpleBarrier:
 
 
 def rendezvous(thread_name):
+    """ Function for print Thread on rendezvous
+
+    :param thread_name: Name of Thread (id)
+    :return: none
+    """
     sleep(randint(1, 10)/10)
     print('rendezvous: %s' % thread_name)
 
 
 def ko(thread_name):
+    """ Function for print Thread after barrier
+
+        :param thread_name: Name of Thread (id)
+        :return: none
+        """
     print('ko: %s' % thread_name)
     sleep(randint(1, 10)/10)
 
 
 def barrier_example(barrier1, barrier2, thread_id):
+    """ Example how work barrier
+
+    :param barrier1: First barrier of class SimpleBarrier
+    :param barrier2: Second barrier of class SimpleBarrier
+    :param thread_id: id of Thread
+    :return: None
+    """
     while True:
         rendezvous(thread_id)
         barrier1.wait()
