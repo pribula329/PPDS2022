@@ -4,6 +4,9 @@ from fei.ppds import Thread, Semaphore, Mutex, print, Event
 
 
 class SharedSemaphore:
+    """
+    Class for Semaphore
+    """
     def __init__(self, size):
         self.fib = [0] * (size + 2)  # +2 for first and second index [0,1]
         self.fib[1] = 1
@@ -13,6 +16,9 @@ class SharedSemaphore:
 
 
 class SharedEvent:
+    """
+        Class for Event
+    """
     def __init__(self, size):
         self.fib = [0] * (size + 2)  # +2 for first and second index [0,1]
         self.fib[1] = 1
@@ -22,6 +28,14 @@ class SharedEvent:
 
 
 def fibonacci(shared, i):
+    """
+    Function for calculate fibonacci sequence with Threads.
+
+    :param shared: shared object of fibonacci array and
+                   array of synchronization objects for threads
+    :param i: id of thread
+    :return: none
+    """
     sleep(randint(1, 10) / 10)
     print("Start thread: " + str(i))
     print("Wait thread: " + str(i))
@@ -33,13 +47,13 @@ def fibonacci(shared, i):
 
 
 THREADS = 15
-#use of semaphores
+# use of semaphores
 sharedSemaphores = SharedSemaphore(THREADS)
 threads = [Thread(fibonacci, sharedSemaphores, i) for i in range(THREADS)]
 print("------Semaphores------")
 [t.join() for t in threads]
 
-#use of events
+# use of events
 sharedEvent = SharedEvent(THREADS)
 threadsEvent = [Thread(fibonacci, sharedEvent, i) for i in range(THREADS)]
 print("------Event------")
