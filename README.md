@@ -72,3 +72,65 @@ class SimpleBarrier:
 
 ````
 >Týmto sme zabezpečili aby vykonávanie barrieri pomocou udalosti bolo korektné aj pri používaní v cykle.
+ 
+
+> **Program 2 (fibonacci.py)**
+
+>Cieľom druhej úlohy bolo navrhnúť výpočet fibonacciho postupnosti pomocou
+> synchronizačných nástrojov. Prv sme pracovali so semaformi a neskôr sme 
+> riešenie upravili aj pre udalosti. 
+````
+class SharedSemaphore:
+    """
+    Class for Semaphore
+    """
+    def __init__(self, size):
+        self.fib = [0] * (size + 2)  # +2 for first and second index [0,1]
+        self.fib[1] = 1
+        self.object = [Semaphore(0) for x in
+                       range(size + 1)]  # semaphores for thread +1 for exception out of range
+        self.object[0].signal(1)
+
+
+class SharedEvent:
+    """
+        Class for Event
+    """
+    def __init__(self, size):
+        self.fib = [0] * (size + 2)  # +2 for first and second index [0,1]
+        self.fib[1] = 1
+        self.object = [Event() for x in
+                       range(size + 1)]  # events for thread +1 for exception out of range
+        self.object[0].signal()
+````
+>Jednotlive triedy obsahujú inicializaciu poľa pre ukladanie hodnôt fibonacciho
+> postupnosti a inicializaciu jednotlivých synchronizačných objektov.
+
+>Po vytvorení vlákien a zavolaní funkcie na výpočet sme donutili vlákna čakať
+> pomocou synchronizačných nástrojov ( **shared.object[i].wait()** ),dokiaľ
+> nedostanú signal aby mohli pokračovať ďalej, okrem prvého vlákna
+> ktorému sme už pri inicializacii vytvorili signal aby mohol pokračovať ďalej.
+> Postupne takto každé vlákno (serializovane), bolo odblokovane ( **shared.object[i].signal()** )
+> pomocou synchronizačných nástrojov (semafór a udalosť) a pokračovalo vo vykonávaní výpočtu.
+````
+def fibonacci(shared, i):
+    """
+    Function for calculate fibonacci sequence with Threads.
+
+    :param shared: shared object of fibonacci array and
+                   array of synchronization objects for threads
+    :param i: id of thread
+    :return: none
+    """
+    sleep(randint(1, 10) / 10)
+    print("Start thread: " + str(i))
+    print("Wait thread: " + str(i))
+    shared.object[i].wait()
+    print("Rerun thread: " + str(i))
+    shared.fib[i + 2] = shared.fib[i + 1] + shared.fib[i]
+    shared.object[i + 1].signal()
+    print("Object send signal in thread " + str(i))
+
+````
+> Na vyriešenie tejto úlohy bolo potrebné vytvoriť N+1 synchronizačných objektov
+> aby každe z vlákien dostalo od synchronizačného objektu signál, aby pokračovalo ďalej.
