@@ -12,7 +12,19 @@ class Shared():
 
 
 def producer(shared):
-    pass
+    while True:
+        # production
+        sleep(randint(1, 10)/10)
+        # contol free space in warehouse
+        shared.free.wait()
+        # warehouse access
+        shared.mutex.lock()
+        # storage product
+        sleep(randint(1, 10)/100)
+        # leave warehouse
+        shared.mutex.unlock()
+        # increase in stocks
+        shared.items.signal()
 
 
 def consumer(shred):
