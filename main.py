@@ -5,6 +5,9 @@ from fei.ppds import Mutex, Semaphore, Thread, print
 
 
 class Shared():
+    """
+            Class for Shared object
+    """
     def __init__(self, size):
         self.finished = False
         self.mutex = Mutex()
@@ -14,6 +17,11 @@ class Shared():
 
 
 def producer(shared):
+    """
+        Function for simulate production of item.
+        :param shared: shared object of class Shared
+        :return: none
+    """
     while True:
         # production
         sleep(randint(1, 10)/100)
@@ -35,6 +43,11 @@ def producer(shared):
 
 
 def consumer(shared):
+    """
+        Function for simulate concumation of item.
+        :param shared: shared object of class Shared
+        :return: none
+    """
     while True:
         # stock control
         shared.items.wait()
@@ -52,7 +65,7 @@ def consumer(shared):
 
 
 
-
+# start of eperiment
 produce_time_experiment = [0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
 produce_people_experiment = [1, 2, 3, 5, 8, 10]
 result_experiment = []
@@ -79,7 +92,7 @@ for time in produce_time_experiment:
         result_experiment.append((time, person, sum_person / 10))
     print(time)
 
-
+# graph
 fig = pyplot.figure()
 ax = pyplot.axes(projection="3d")
 x = [k[0] for k in result_experiment]
