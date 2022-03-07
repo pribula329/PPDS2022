@@ -57,6 +57,7 @@ def consumer(shared):
         shared.mutex.lock()
         # get item from warehouse
         sleep(randint(1,10)/1000)
+        shared.count -= 1
         #print('Get item from warehouse')
         # leave warehouse
         shared.mutex.unlock()
@@ -75,9 +76,9 @@ for time in produce_time_experiment:
         sum_person = 0
         for i in range(10):
 
-            share = Shared(20)
+            share = Shared(10)
             producers = [Thread(producer, share) for x in range(person)]
-            consumers = [Thread(consumer, share) for y in range(50)]
+            consumers = [Thread(consumer, share) for y in range(10)]
 
             sleep(time)
             share.finished = True
