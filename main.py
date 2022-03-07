@@ -75,18 +75,18 @@ for time in produce_time_experiment:
         sum_person = 0
         for i in range(10):
 
-            share = Shared(10)
+            share = Shared(20)
             producers = [Thread(producer, share) for x in range(person)]
-            consumers = [Thread(consumer, share) for y in range(10)]
+            consumers = [Thread(consumer, share) for y in range(50)]
 
-            sleep(0.1)
+            sleep(time)
             share.finished = True
             share.items.signal(100)
             share.free.signal(100)
             for t in producers + consumers:
                 t.join()
             #print("---------------")
-            item_sec = share.count / 0.1
+            item_sec = share.count / time
             sum_person += item_sec
         print(person)
         result_experiment.append((time, person, sum_person / 10))
