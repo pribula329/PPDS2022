@@ -9,6 +9,7 @@ class Shared():
         self.mutex = Mutex()
         self.items = Semaphore(0)
         self.free = Semaphore(size)
+        self.count = 0
 
 
 def producer(shared):
@@ -23,8 +24,7 @@ def producer(shared):
         # warehouse access
         shared.mutex.lock()
         # storage product
-        print('Storage product in warehouse')
-        sleep(randint(1, 10)/100)
+        shared.count += 1
         # leave warehouse
         shared.mutex.unlock()
         # increase in stocks
@@ -47,19 +47,27 @@ def consumer(shared):
         # tell producent work !!!
         shared.free.signal()
         # processing item
-        print('Consume')
         sleep(randint(1,10)/10)
 
 
-share = Shared(10)
-producers = [Thread(producer, share) for x in range(5)]
-consumers = [Thread(consumer, share) for y in range(2)]
+produce_time_experiment = [0.1, 0.15, 0.25, 0.35]
+produce_people_experiment = [1, 2, 3, 5, 8]
+for time in produce_time_experiment:
 
-sleep(1)
-share.finished = True
-print("Wait")
-share.items.signal(100)
-share.free.signal(100)
-for t in producers + consumers:
-        t.join()
-print("End")
+    for person in produce_people_experiment:
+
+        for i in range(10):
+
+            share = Shared(10)
+            producers = [Thread(producer, share) for x in range(person)]
+            consumers = [Thread(consumer, share) for y in range(2)]
+
+            sleep(0.05)
+            share.finished = True
+            print("Wait")
+            share.items.signal(100)
+            share.free.signal(100)
+            for t in producers + consumers:
+                t.join()
+            print("End")
+
