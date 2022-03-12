@@ -60,3 +60,10 @@ def sensor(shared, sen_id):
         shared.sensor_LS.unlock(shared.access_data)
 
 
+share = Shared()
+monitors = [Thread(monitor, share, x) for x in range(8)]
+sensor_P = Thread(sensor, share, 'P cidlo')
+sensor_H = Thread(sensor, share, 'H cidlo')
+sensor_T = Thread(sensor, share, 'T cidlo')
+
+
