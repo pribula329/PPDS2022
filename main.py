@@ -53,9 +53,12 @@ def sensor(shared, sen_id):
         shared.turnstile.wait()
         shared.turnstile.signal()
         sensor_count = shared.sensor_LS.lock(shared.access_data)
-        # TODO type of sensor
-        sleep(1)
-        print(f'cidlo "{sen_id}": pocet_zapisujucich_cidiel= {sensor_count}, trvanie__zapisu={1}')
+        if sen_id == 'P cidlo' or sen_id == 'T cidlo':
+            sensor_time = randint(10, 20)/1000
+        else:
+            sensor_time = randint(20, 25) / 1000
+        sleep(sensor_time)
+        print(f'cidlo "{sen_id}": pocet_zapisujucich_cidiel= {sensor_count}, trvanie__zapisu={sensor_time}')
         shared.valid_data.signal()
         shared.sensor_LS.unlock(shared.access_data)
 
@@ -66,4 +69,8 @@ sensor_P = Thread(sensor, share, 'P cidlo')
 sensor_H = Thread(sensor, share, 'H cidlo')
 sensor_T = Thread(sensor, share, 'T cidlo')
 
-
+for m in monitors:
+    m.join()
+sensor_P.join()
+sensor_H.join()
+sensor_T.join()
