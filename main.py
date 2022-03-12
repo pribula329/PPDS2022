@@ -34,8 +34,17 @@ class Shared:
         self.valid_data = Event()
 
 
-def monitor():
-    pass
+def monitor(shared, mon_id):
+    shared.valid_data.wait()
+    while True:
+        wait_time = randint(40, 50)/1000
+        sleep(wait_time)  # One update takes 40-50 ms.
+        shared.turnstile.wait()
+        monitor_count = shared.monitor_LS.lock(shared.access_data)
+        shared.turnstile.signal()
+
+        print(f'monit "{mon_id}": pocet_citajucich_monitorov= {monitor_count}, trvanie_citania={wait_time}')
+        shared.monitor_LS.unlock(shared.access_data)
 
 
 def sensor():
