@@ -47,5 +47,16 @@ def monitor(shared, mon_id):
         shared.monitor_LS.unlock(shared.access_data)
 
 
-def sensor():
-    pass
+def sensor(shared, sen_id):
+    while True:
+        sleep(randint(50, 60)/1000)  # The sensors update every 50-60 ms
+        shared.turnstile.wait()
+        shared.turnstile.signal()
+        sensor_count = shared.sensor_LS.lock(shared.access_data)
+        # TODO type of sensor
+        sleep(1)
+        print(f'cidlo "{sen_id}": pocet_zapisujucich_cidiel= {sensor_count}, trvanie__zapisu={1}')
+        shared.valid_data.signal()
+        shared.sensor_LS.unlock(shared.access_data)
+
+
