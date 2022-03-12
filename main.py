@@ -26,7 +26,12 @@ class LS:
 
 
 class Shared:
-    pass
+    def __init__(self):
+        self.access_data = Semaphore(1)
+        self.turnstile = Semaphore(1)
+        self.monitor_LS = LS()
+        self.sensor_LS = LS()
+        self.valid_data = Event()
 
 
 def monitor():
