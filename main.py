@@ -37,32 +37,53 @@ class Shared:
 def monitor(shared, mon_id):
     shared.valid_data.wait()
     while True:
-        wait_time = randint(40, 50)/1000
-        sleep(wait_time)  # One update takes 40-50 ms.
-        shared.turnstile.wait()
-        monitor_count = shared.monitor_LS.lock(shared.access_data)
-        shared.turnstile.signal()
+        wait_time = randint(40, 50) / 1000
 
+        shared.turnstile.wait()
+
+        shared.turnstile.signal()
+        monitor_count = shared.monitor_LS.lock(shared.access_data)
         print(f'monit "{mon_id}": pocet_citajucich_monitorov= {monitor_count}, trvanie_citania={wait_time}')
+        sleep(wait_time)  # One update takes 40-50 ms.
         shared.monitor_LS.unlock(shared.access_data)
 
 
 def sensor(shared, sen_id):
+    global p
+    global h
+    global t
     while True:
-        sleep(randint(50, 60)/1000)  # The sensors update every 50-60 ms
+        sleep(randint(50, 60) / 1000)  # The sensors update every 50-60 ms
         shared.turnstile.wait()
-        shared.turnstile.signal()
         sensor_count = shared.sensor_LS.lock(shared.access_data)
-        if sen_id == 'P cidlo' or sen_id == 'T cidlo':
-            sensor_time = randint(10, 20)/1000
+        shared.turnstile.signal()
+
+        if sen_id == 'P cidlo':
+            sensor_time = randint(10, 20) / 1000
+            p = 1
+        elif sen_id == 'T cidlo':
+            sensor_time = randint(10, 20) / 1000
+            t = 1
         else:
             sensor_time = randint(20, 25) / 1000
-        sleep(sensor_time)
+            h = 1
+
         print(f'cidlo "{sen_id}": pocet_zapisujucich_cidiel= {sensor_count}, trvanie__zapisu={sensor_time}')
-        shared.valid_data.signal()
+        sleep(sensor_time)  # The sensor update time
         shared.sensor_LS.unlock(shared.access_data)
+        if p and t and h:
+            shared.valid_data.signal()
+            p = 0
+            t = 0
+            h = 0
 
 
+global p
+global h
+global t
+p = 0
+t = 0
+h = 0
 share = Shared()
 monitors = [Thread(monitor, share, x) for x in range(8)]
 sensor_P = Thread(sensor, share, 'P cidlo')
