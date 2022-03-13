@@ -1,9 +1,16 @@
+"""
+Author: Lukáš Pribula
+Simulation of the example Nuclear power plant # 2 from the subject PPDS
+"""
 from fei.ppds import Mutex, Semaphore, Thread, Event, print
 from time import sleep
 from random import randint
 
 
 class LS:
+    """
+    Class of LightSwitch from seminar
+    """
     def __init__(self):
         self.mutex = Mutex()
         self.counter = 0
@@ -26,6 +33,9 @@ class LS:
 
 
 class Shared:
+    """
+    Class of shared
+    """
     def __init__(self):
         self.access_data = Semaphore(1)
         self.turnstile = Semaphore(1)
@@ -35,6 +45,13 @@ class Shared:
 
 
 def monitor(shared, mon_id):
+    """
+    Function for simulation read of information from sensors
+
+    :param shared: object of class Shared
+    :param mon_id: id of monitor
+    :return: none
+    """
     shared.valid_data.wait()
     while True:
         wait_time = randint(40, 50) / 1000
@@ -49,6 +66,13 @@ def monitor(shared, mon_id):
 
 
 def sensor(shared, sen_id):
+    """
+    Function for simulation write of information from sensors
+
+    :param shared: object of class Shared
+    :param sen_id: id of sensor
+    :return: none
+    """
     global p
     global h
     global t
