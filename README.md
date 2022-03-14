@@ -21,7 +21,9 @@ Ako vzor sme používalí riešenie zadania Atomová elektráreň #1, ktorá bol
 
 > Pri tomto zadaní išlo o vzájomne vylúčenie kategorií(monitory a senzory). Monitori mohli iba čitať informácie od 
 > senzorov a senzori iba zapisovať údaje. Pri implementácií sme použili vzor zo semináru (Atomová elektráreň #1), pri 
-> ktorom bole potrebné spraviť určité úpravy pre toto zadanie.
+> ktorom bole potrebné spraviť určité úpravy pre toto zadanie. Použili sme LightSwitch, Event a Semafor. Event nám pomohol aby monitori čítali 
+> údaje až potom čo vykonajú aktualizáciu všetky senzori. LightSwitch a Semafor nám zabezpečili aby jednotlive kategórie(monitory a senzory) medzi 
+> sebou spolupracovali a "nebili sa navzajom"
 
 > #### Pseudokód
 > ````
