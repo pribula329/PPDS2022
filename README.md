@@ -10,7 +10,9 @@
 
 ### Zdroje: 
 > Seminár PPDS 
->
+> 
+>https://greenteapress.com/wp/semaphores/
+> 
 > [Stránka predmetu PPDS](https://uim.fei.stuba.sk/predmet/i-ppds/)
 ### Verzia Pythonu
 > 3.10 a 3.9
