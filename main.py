@@ -9,9 +9,9 @@ Preto ich nedavame do zdielaneho objektu.
     M - pocet porcii misionara, ktore sa zmestia do hrnca.
     N - pocet divochov v kmeni (kuchara nepocitame).
 """
-M = 2
-N = 3
-
+M = 5
+N = 8
+C = 5
 
 class SimpleBarrier:
     """Vlastna implementacia bariery
@@ -58,6 +58,8 @@ class Shared:
         self.empty_pot = Semaphore(0)
         self.barrier1 = SimpleBarrier(N)
         self.barrier2 = SimpleBarrier(N)
+        self.cooks = 0  # cooks
+        self.mutexC = Mutex()
 
 
 def get_serving_from_pot(savage_id, shared):
@@ -97,8 +99,8 @@ def savage(savage_id, shared):
         print("divoch %2d: pocet zostavajucich porcii v hrnci je %2d" %
               (savage_id, shared.servings))
         if shared.servings == 0:
-            print("divoch %2d: budim kuchara" % savage_id)
-            shared.empty_pot.signal()
+            print("divoch %2d: budim kucharov" % savage_id)
+            shared.empty_pot.signal(C)
             shared.full_pot.wait()
         get_serving_from_pot(savage_id, shared)
         shared.mutex.unlock()
@@ -112,13 +114,14 @@ def put_servings_in_pot(M, shared):
     Ta udrziava informaciu o tom, kolko porcii je v hrnci k dispozicii.
     """
 
-    print("kuchar: varim")
+    print("kuchari: varime")
     # navarenie jedla tiez cosi trva...
-    sleep(0.4 + randint(0, 2) / 10)
+    sleep(0.4 + randint(0, 2) / 10)  # cooks are helping together
     shared.servings += M
+    print("kuchari: navarili sme %2d porcii mozete jest" % shared.servings)
 
 
-def cook(M, shared):
+def cook(M, shared, cook_id):
     """Na strane kuchara netreba robit ziadne modifikacie kodu.
     Riesenie je standardne podla prednasky.
     Navyse je iba argument M, ktorym explicitne hovorime, kolko porcii
@@ -129,8 +132,19 @@ def cook(M, shared):
 
     while True:
         shared.empty_pot.wait()
-        put_servings_in_pot(M, shared)
-        shared.full_pot.signal()
+        shared.mutexC.lock()
+        shared.cooks += 1
+        if shared.cooks < C:
+            print("kuchar %2d: idem pomahat" % cook_id)
+            sleep(0.001)
+        else:
+            print("kuchar %2d: sme vsetci" % cook_id)
+            put_servings_in_pot(M, shared)
+
+        if shared.servings == M:
+            shared.full_pot.signal()
+            shared.cooks = 0
+        shared.mutexC.unlock()
 
 
 def init_and_run(N, M):
@@ -139,7 +153,8 @@ def init_and_run(N, M):
     shared = Shared()
     for savage_id in range(0, N):
         threads.append(Thread(savage, savage_id, shared))
-    threads.append(Thread(cook, M, shared))
+    for i in range(0, C):
+        threads.append(Thread(cook, M, shared, i))
 
     for t in threads:
         t.join()
