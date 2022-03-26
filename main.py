@@ -2,6 +2,7 @@ from fei.ppds import Thread, Mutex, Semaphore, print
 from random import randint
 from time import sleep
 
+
 class Barrier():
     def __init__(self, N):
         self.N = N
@@ -27,21 +28,29 @@ class Shared():
         self.barrier = Barrier(3)
         self.oxyQueue = Semaphore(0)
         self.hydroQueue = Semaphore(0)
+        self.countMolecule = 0
 
 
-def bond(shared):
-    print("A H2O molecule is formed")
-    sleep(0.001)
-    print("A H2O molecule was created")
-    print(f"You have {shared.oxygen} molecul of OXYGEN")
-    print(f"You have {shared.hydrogen} molecul of HYDROGEN")
-    print("----------------------------")
+def bond(shared, type):
+    if type == "H" and shared.countMolecule < 3:
+        print("Added H molecule ")
+        shared.countMolecule += 1
+    elif type == "O" and shared.countMolecule < 3:
+        print("Added O molecule ")
+        shared.countMolecule += 1
+
+    if shared.countMolecule == 3:
+        shared.countMolecule = 0
+        print("A H20 molecule was created")
+        print(f"You have {shared.oxygen} molecul of OXYGEN")
+        print(f"You have {shared.hydrogen} molecul of HYDROGEN")
+        print("----------------------------")
 
 
 def oxygen(shared):
     shared.mutex.lock()
     shared.oxygen += 1
-    print(f"You have {shared.oxygen} molecul of OXYGEN")
+    print(f"Create molecul of OXYGEN. Now you have  {shared.oxygen} OXYGENS")
     if shared.hydrogen >= 2:
         shared.hydroQueue.signal(2)
         shared.hydrogen -= 2
@@ -52,7 +61,7 @@ def oxygen(shared):
 
     shared.oxyQueue.wait()
 
-    bond(shared) # function for print
+    bond(shared,"O") # function for print
     sleep(0.5)
     shared.barrier.wait()
     shared.mutex.unlock()
@@ -61,7 +70,7 @@ def oxygen(shared):
 def hydrogen(shared):
     shared.mutex.lock()
     shared.hydrogen += 1
-    print(f"You have {shared.hydrogen} molecul of HYDROGEN")
+    print(f"Create molecul of HYDROGEN. Now you have  {shared.hydrogen} HYDROGENS")
     if shared.hydrogen >= 2 and shared.oxygen >= 1:
         shared.hydroQueue.signal(2)
         shared.hydrogen -= 2
@@ -72,10 +81,11 @@ def hydrogen(shared):
 
     shared.hydroQueue.wait()
 
-    bond(shared)
+    bond(shared,"H")
     sleep(0.5)
 
     shared.barrier.wait()
+
 
 thread = []
 shared = Shared()
@@ -91,4 +101,3 @@ for x in range(0,10):
 
 for t in thread:
     t.join()
-
