@@ -29,5 +29,20 @@ def oxygen(shared):
     shared.barrier.wait()
     shared.mutex.signal()
 
-def hydrogen():
-    pass
+
+def hydrogen(shared):
+    shared.mutex.wait()
+    shared.hydrogen += 1
+    if shared.hydrogen >= 2 and shared.oxygen >= 1:
+        shared.hydroQueue.signal(2)
+        shared.hydrogen -= 2
+        shared.oxyQueue.signal()
+        shared.oxygen -= 1
+    else:
+        shared.mutex.signal()
+
+    shared.hydroQueue.wait()
+
+    bond()
+
+    shared.barrier.wait()
