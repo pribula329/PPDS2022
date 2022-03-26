@@ -1,4 +1,22 @@
 from fei.ppds import Thread, Mutex, Semaphore, print
+from random import randint
+
+
+class Barrier():
+    def __init__(self, N):
+        self.N = N
+        self.counter = 0
+        self.mutex = Mutex()
+        self.turnstile = Semaphore(0)
+
+    def wait(self):
+        self.mutex.lock()
+        self.counter += 1
+        if self.counter == self.N:
+            self.counter = 0
+            self.turnstile.signal(self.N)
+        self.mutex.unlock()
+        self.turnstile.wait()
 
 
 class Shared():
@@ -12,43 +30,48 @@ class Shared():
 
 
 def bond(shared):
+
     print("A H2O molecule is formed")
     print(f"You have {shared.oxygen} molecul of OXYGEN")
     print(f"You have {shared.hydrogen} molecul of HYDROGEN")
 
 
 def oxygen(shared):
-    shared.mutex.wait()
+    shared.mutex.lock()
     shared.oxygen += 1
+    print(f"You have {shared.oxygen} molecul of OXYGEN")
     if shared.hydrogen >= 2:
         shared.hydroQueue.signal(2)
         shared.hydrogen -= 2
         shared.oxyQueue.signal()
         shared.oxygen -= 1
     else:
-        shared.mutex.signal()
+        shared.mutex.unlock()
 
     shared.oxyQueue.wait()
 
-    bond() # function for print
+    bond(shared) # function for print
 
     shared.barrier.wait()
-    shared.mutex.signal()
+    shared.mutex.unlock()
 
 
 def hydrogen(shared):
-    shared.mutex.wait()
+    shared.mutex.lock()
     shared.hydrogen += 1
+    print(f"You have {shared.hydrogen} molecul of HYDROGEN")
     if shared.hydrogen >= 2 and shared.oxygen >= 1:
         shared.hydroQueue.signal(2)
         shared.hydrogen -= 2
         shared.oxyQueue.signal()
         shared.oxygen -= 1
     else:
-        shared.mutex.signal()
+        shared.mutex.unlock()
 
     shared.hydroQueue.wait()
 
-    bond()
+    bond(shared)
 
     shared.barrier.wait()
+
+
