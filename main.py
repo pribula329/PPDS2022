@@ -1,9 +1,16 @@
+"""
+Author: Lukáš Pribula
+Simulation of the formation H2O molecule
+"""
 from fei.ppds import Thread, Mutex, Semaphore, print
 from random import randint
 from time import sleep
 
 
 class Barrier():
+    """
+        Implementation of class Barrier
+    """
     def __init__(self, N):
         self.N = N
         self.counter = 0
@@ -21,6 +28,9 @@ class Barrier():
 
 
 class Shared():
+    """
+        Implementation of class Shared
+    """
     def __init__(self):
         self.mutex = Mutex()
         self.oxygen = 0
@@ -32,6 +42,13 @@ class Shared():
 
 
 def bond(shared, type):
+    """
+    Function for simulation creating molecule
+
+    :param shared: object of class Shared
+    :param type: type of molecule
+    :return: none
+    """
     if type == "H" and shared.countMolecule < 3:
         print("Added H molecule ")
         shared.countMolecule += 1
@@ -48,6 +65,11 @@ def bond(shared, type):
 
 
 def oxygen(shared):
+    """
+    Function for simulation oxygen molecul
+    :param shared: object of class Shared
+    :return: none
+    """
     shared.mutex.lock()
     shared.oxygen += 1
     print(f"Create molecul of OXYGEN. Now you have  {shared.oxygen} OXYGENS")
@@ -61,13 +83,19 @@ def oxygen(shared):
 
     shared.oxyQueue.wait()
 
-    bond(shared,"O") # function for print
+    bond(shared, "O")  # function for print
     sleep(0.5)
     shared.barrier.wait()
     shared.mutex.unlock()
 
 
 def hydrogen(shared):
+    """
+    Function for simulation hydrogen molecul
+
+    :param shared: object of class Shared
+    :return: none
+    """
     shared.mutex.lock()
     shared.hydrogen += 1
     print(f"Create molecul of HYDROGEN. Now you have  {shared.hydrogen} HYDROGENS")
@@ -81,7 +109,7 @@ def hydrogen(shared):
 
     shared.hydroQueue.wait()
 
-    bond(shared,"H")
+    bond(shared, "H")
     sleep(0.5)
 
     shared.barrier.wait()
@@ -89,10 +117,10 @@ def hydrogen(shared):
 
 thread = []
 shared = Shared()
-for x in range(0,10):
-    typ = randint(1,2)
+for x in range(0, 10):
+    typ = randint(1, 2)
     if typ == 1:
-        tH = Thread(hydrogen,shared)
+        tH = Thread(hydrogen, shared)
         thread.append(tH)
     else:
         tO = Thread(oxygen, shared)
