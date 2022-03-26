@@ -11,9 +11,23 @@ class Shared():
         self.hydroQueue = Semaphore(0)
 
 
-def oxygen():
-    pass
+def oxygen(shared):
+    shared.mutex.wait()
+    shared.oxygen += 1
+    if shared.hydrogen >= 2:
+        shared.hydroQueue.signal(2)
+        shared.hydrogen -= 2
+        shared.oxyQueue.signal()
+        shared.oxygen -= 1
+    else:
+        shared.mutex.signal()
 
+    shared.oxyQueue.wait()
+
+    bond() # function for print
+
+    shared.barrier.wait()
+    shared.mutex.signal()
 
 def hydrogen():
     pass
