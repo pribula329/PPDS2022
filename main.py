@@ -11,6 +11,12 @@ class Shared():
         self.hydroQueue = Semaphore(0)
 
 
+def bond(shared):
+    print("A H2O molecule is formed")
+    print(f"You have {shared.oxygen} molecul of OXYGEN")
+    print(f"You have {shared.hydrogen} molecul of HYDROGEN")
+
+
 def oxygen(shared):
     shared.mutex.wait()
     shared.oxygen += 1
