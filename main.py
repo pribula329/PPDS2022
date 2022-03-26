@@ -1,6 +1,6 @@
 from fei.ppds import Thread, Mutex, Semaphore, print
 from random import randint
-
+from time import sleep
 
 class Barrier():
     def __init__(self, N):
@@ -30,10 +30,12 @@ class Shared():
 
 
 def bond(shared):
-
     print("A H2O molecule is formed")
+    sleep(0.001)
+    print("A H2O molecule was created")
     print(f"You have {shared.oxygen} molecul of OXYGEN")
     print(f"You have {shared.hydrogen} molecul of HYDROGEN")
+    print("----------------------------")
 
 
 def oxygen(shared):
@@ -51,7 +53,7 @@ def oxygen(shared):
     shared.oxyQueue.wait()
 
     bond(shared) # function for print
-
+    sleep(0.5)
     shared.barrier.wait()
     shared.mutex.unlock()
 
@@ -71,7 +73,22 @@ def hydrogen(shared):
     shared.hydroQueue.wait()
 
     bond(shared)
+    sleep(0.5)
 
     shared.barrier.wait()
 
+thread = []
+shared = Shared()
+for x in range(0,10):
+    typ = randint(1,2)
+    if typ == 1:
+        tH = Thread(hydrogen,shared)
+        thread.append(tH)
+    else:
+        tO = Thread(oxygen, shared)
+        thread.append(tO)
+
+
+for t in thread:
+    t.join()
 
