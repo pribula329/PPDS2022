@@ -17,6 +17,7 @@ def coprogram2(count):
         print("Program 2 start 3")
         yield
 
+
 def count1():
     cnt = 0
     try:
@@ -24,6 +25,16 @@ def count1():
             cnt += (yield)
     except GeneratorExit:
         print(f'Coprogram 1 send {cnt} employer')
+
+
+def count2():
+    cnt = 0
+    try:
+        while True:
+            cnt += (yield)
+    except GeneratorExit:
+        print(f'Coprogram 2 send {cnt} employer')
+
 
 def main(c1, c2):
     for x in range(10):
