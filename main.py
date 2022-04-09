@@ -5,4 +5,14 @@ def coprogram1():
 
 
 def coprogram2():
-    pass
+    print("Program 2")
+    yield
+
+
+def main(c1, c2):
+    while True:
+        next(c1)
+        next(c2)
+
+
+main(coprogram1(), coprogram2())
