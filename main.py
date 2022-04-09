@@ -6,7 +6,7 @@ Simulation of the switching coprograms
 
 def coprogram1(count, fnc):
     """
-    Function of simulation send employer  to count function
+    Function of simulation send workers  to count function
     :param count: count of loop
     :param fnc: next function for coprogram
     :return: yield to main function
@@ -23,7 +23,7 @@ def coprogram1(count, fnc):
 
 def coprogram2(count, fnc):
     """
-    Function of simulation send employer  to count function
+    Function of simulation send workers  to count function
     :param count: count of loop
     :param fnc: next function for coprogram
     :return: yield to main function
@@ -40,30 +40,30 @@ def coprogram2(count, fnc):
 
 def count1():
     """
-    Function for count employer
+    Function for count workers
     :return: none
     """
     cnt = 0
     try:
         while True:
             cnt += (yield)
-            print(f'Count of employer in count1 is {cnt}')
+            print(f'Count of workers in count1 is {cnt}')
     except GeneratorExit:
-        print(f'Coprogram 1 send {cnt} employer')
+        print(f'Coprogram 1 send {cnt} workers')
 
 
 def count2():
     """
-    Function for count employer
+    Function for count workers
     :return: none
     """
     cnt = 0
     try:
         while True:
             cnt += (yield)
-            print(f'Count of employer in count2 is {cnt}')
+            print(f'Count of workers in count2 is {cnt}')
     except GeneratorExit:
-        print(f'Coprogram 2 send {cnt} employer')
+        print(f'Coprogram 2 send {cnt} workers')
 
 
 def main(c1, c2):
