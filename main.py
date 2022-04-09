@@ -80,17 +80,15 @@ def main(c1, c2):
             next(c1)
 
         except StopIteration:
-            print()
             print("Program 1 is killed")
         try:
             print()
             print(f"ETAPA {x} Program 2---------------")
             next(c2)
         except StopIteration:
-            print()
             print("Program 2 is killed")
 
 
 cnt1 = count1()
 cnt2 = count2()
-main(coprogram1(3, cnt1), coprogram2(5, cnt2))
+main(coprogram1(1, cnt1), coprogram2(2, cnt2))
