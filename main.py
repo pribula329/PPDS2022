@@ -1,6 +1,7 @@
 
 def coprogram1():
-    pass
+    print("Program 1")
+    yield
 
 
 def coprogram2():
