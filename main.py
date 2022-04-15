@@ -24,13 +24,11 @@ def main():
     :return: none
     """
     start_time = time()
-    cooks = ['Lukas', 'Peter', 'Erik']
-
-    for c in cooks:
-        cook = cooking(c)
-        for x in range(4):
+    cooks = [cooking('Lukas'), cooking('Peter'), cooking('Erik')]
+    for x in range(3):
+        for c in cooks:
             try:
-                next(cook)
+                next(c)
             except StopIteration:
                 print(f"Kuchar {c} dovaril vsetky jedla\n")
     cas = time() - start_time
