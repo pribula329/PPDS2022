@@ -10,6 +10,9 @@ async def cooking(cook):
 
 
 async def main():
-    pass
+    start_time = time()
+    await asyncio.gather(cooking('Lukas'),cooking('Peter'), cooking('Erik'))
+    cas = time() - start_time
+    print(f"Celkovy cas varenia: {cas:.1f}")
 
 asyncio.run(main())
