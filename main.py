@@ -1,5 +1,8 @@
+"""
+Author: Lukáš Pribula
+Cuda program for mirroring image
+"""
 import time
-
 from numba import cuda
 import numpy as np
 from PIL import Image
@@ -8,6 +11,12 @@ import math
 
 @cuda.jit
 def rotuj(image1, vystup):
+    """
+    Function for cuda computing
+    :param image1: input image
+    :param vystup: output image
+    :return: none
+    """
     x, y, z = cuda.grid(3)
     if x < image1.shape[0] and y < image1.shape[1] and z < image1.shape[2]:
         vystup[x][y][z] += (image1[127 - x][y][z])
@@ -15,6 +24,10 @@ def rotuj(image1, vystup):
 
 
 def main():
+    """
+    Function for cuda example
+    :return: none
+    """
     start=time.time()
     image = np.array(Image.open("mini.png"))
     print(image.shape)
