@@ -1,3 +1,5 @@
+import time
+
 from numba import cuda
 import numpy as np
 from PIL import Image
@@ -13,9 +15,10 @@ def rotuj(image1, vystup):
 
 
 def main():
+    start=time.time()
     image = np.array(Image.open("mini.png"))
     print(image.shape)
-    threadsperblock = (128, 128, 4)
+    threadsperblock = (32, 32, 3)
     blockX = math.ceil(image.shape[0] / threadsperblock[0])
     blockY = math.ceil(image.shape[1] / threadsperblock[1])
     blockZ = math.ceil(image.shape[2] / threadsperblock[2])
@@ -29,5 +32,6 @@ def main():
     out = output.copy_to_host().astype('uint8')
     out = Image.fromarray(out)
     out.show()
+    print(time.time()-start)
 
 main()
