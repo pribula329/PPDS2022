@@ -26,7 +26,7 @@ def main():
 
     rotuj[blockspergrid, threadsperblock](input1, output)
 
-    out = output.to_host()
+    out = output.copy_to_host().astype('uint8')
     out = Image.fromarray(out)
     out.show()
 
