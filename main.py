@@ -1,16 +1,50 @@
-# This is a sample Python script.
+"""
+Author: Lukáš Pribula
+Cuda program for mirroring image
+"""
+import time
+from numba import cuda
+import numpy as np
+from PIL import Image
+import math
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+
+@cuda.jit
+def rotuj(image1, vystup):
+    """
+    Function for cuda computing
+    :param image1: input image
+    :param vystup: output image
+    :return: none
+    """
+    x, y, z = cuda.grid(3)
+    if x < image1.shape[0] and y < image1.shape[1] and z < image1.shape[2]:
+        vystup[x][y][z] += (image1[127 - x][y][z])
+        print(x)
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+def main():
+    """
+    Function for cuda example
+    :return: none
+    """
+    start=time.time()
+    image = np.array(Image.open("mini.png"))
+    print(image.shape)
+    threadsperblock = (32, 32, 3)
+    blockX = math.ceil(image.shape[0] / threadsperblock[0])
+    blockY = math.ceil(image.shape[1] / threadsperblock[1])
+    blockZ = math.ceil(image.shape[2] / threadsperblock[2])
+    blockspergrid = (blockX, blockY, blockZ)
 
+    input1 = cuda.to_device(image)
+    output = cuda.device_array(image.shape)
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+    rotuj[blockspergrid, threadsperblock](input1, output)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    out = output.copy_to_host().astype('uint8')
+    out = Image.fromarray(out)
+    out.show()
+    print(time.time()-start)
+
+main()
