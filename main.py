@@ -18,9 +18,10 @@ def rotuj(image1, vystup):
     :return: none
     """
     x, y, z = cuda.grid(3)
+
     if x < image1.shape[0] and y < image1.shape[1] and z < image1.shape[2]:
-        vystup[x][y][z] += (image1[127 - x][y][z])
-        print(x)
+        vystup[x][y][z] = (image1[x][y][z])
+
 
 
 def main():
@@ -28,36 +29,55 @@ def main():
     Function for cuda example
     :return: none
     """
-    start=time.time()
     image = np.array(Image.open("mini.png"))
     print(image.shape)
 
-    data = []
+    data_out = []
     data_gpu = []
     gpu_out = []
     streams = []
+    start_events = []
+    end_events = []
+    imageSplit = np.array_split(image, 2)
 
-   # threadsperblock = (32, 32, 3)
-   # blockX = math.ceil(image.shape[0] / threadsperblock[0])
-   # blockY = math.ceil(image.shape[1] / threadsperblock[1])
-   # blockZ = math.ceil(image.shape[2] / threadsperblock[2])
-   # blockspergrid = (blockX, blockY, blockZ)
+    for x in range(len(imageSplit)):
+        pokus = Image.fromarray(imageSplit[x])
+        pokus.show()
+        streams.append(cuda.stream())
+        start_events.append(cuda.event())
+        end_events.append(cuda.event())
 
-    #input1 = cuda.to_device(image)
-    #output = cuda.device_array(image.shape)
+    for i in range(len(imageSplit)):
+        data_gpu.append(cuda.to_device(imageSplit[i], stream=streams[i]))
+        data_out.append(cuda.to_device(imageSplit[i], stream=streams[i]))
 
 
-    #rotuj[blockspergrid, threadsperblock](input1, output)
+    t_start = time.perf_counter()
+    for i in range(len(imageSplit)):
+        print(i)
+        start_events[i].record(streams[i])
+        rotuj[1, 64, streams[i]](data_gpu[i], data_out[1-i])
 
-    streams.append(cuda.stream())
-    data.append(image)
-    data_gpu.append(cuda.to_device(data[0], stream=streams[0]))
-    output = cuda.device_array(image.shape)
-    rotuj[1, 64, streams[0]](data_gpu[0], output)
-    gpu_out.append(output.copy_to_host(stream=streams[0]).astype('uint8'))
+    t_end = time.perf_counter()
 
-    out = Image.fromarray(gpu_out[0])
+    for i in range(len(imageSplit)):
+        end_events[i].record(streams[i])
+        gpu_out.append(data_out[i].copy_to_host(stream=streams[i]))
+    out =gpu_out[0]
+    for i in range(1,len(gpu_out)):
+        out = np.concatenate((out, gpu_out[i]))
+
+
+
+
+
+    out = out.reshape(128,128,3)
+    out = out.astype('uint8')
+    out = Image.fromarray(out)
+    out.save("out_stream.png")
     out.show()
-    print(time.time()-start)
+    print(f'Total time: {t_end - t_start}')
+
+
 
 main()
