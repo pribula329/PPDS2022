@@ -38,11 +38,10 @@ def main():
     streams = []
     start_events = []
     end_events = []
-    imageSplit = np.array_split(image, 2)
+    imageSplit = np.array_split(image, 128)
 
     for x in range(len(imageSplit)):
-        pokus = Image.fromarray(imageSplit[x])
-        pokus.show()
+
         streams.append(cuda.stream())
         start_events.append(cuda.event())
         end_events.append(cuda.event())
@@ -56,7 +55,7 @@ def main():
     for i in range(len(imageSplit)):
         print(i)
         start_events[i].record(streams[i])
-        rotuj[1, 64, streams[i]](data_gpu[i], data_out[1-i])
+        rotuj[1, 64, streams[i]](data_gpu[i], data_out[127-i])
 
     t_end = time.perf_counter()
 
