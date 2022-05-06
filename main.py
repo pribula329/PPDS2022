@@ -37,19 +37,26 @@ def main():
     gpu_out = []
     streams = []
 
-    threadsperblock = (32, 32, 3)
-    blockX = math.ceil(image.shape[0] / threadsperblock[0])
-    blockY = math.ceil(image.shape[1] / threadsperblock[1])
-    blockZ = math.ceil(image.shape[2] / threadsperblock[2])
-    blockspergrid = (blockX, blockY, blockZ)
+   # threadsperblock = (32, 32, 3)
+   # blockX = math.ceil(image.shape[0] / threadsperblock[0])
+   # blockY = math.ceil(image.shape[1] / threadsperblock[1])
+   # blockZ = math.ceil(image.shape[2] / threadsperblock[2])
+   # blockspergrid = (blockX, blockY, blockZ)
 
-    input1 = cuda.to_device(image)
+    #input1 = cuda.to_device(image)
+    #output = cuda.device_array(image.shape)
+
+
+    #rotuj[blockspergrid, threadsperblock](input1, output)
+
+    streams.append(cuda.stream())
+    data.append(image)
+    data_gpu.append(cuda.to_device(data[0], stream=streams[0]))
     output = cuda.device_array(image.shape)
+    rotuj[1, 64, streams[0]](data_gpu[0], output)
+    gpu_out.append(output.copy_to_host(stream=streams[0]).astype('uint8'))
 
-    rotuj[blockspergrid, threadsperblock](input1, output)
-
-    out = output.copy_to_host().astype('uint8')
-    out = Image.fromarray(out)
+    out = Image.fromarray(gpu_out[0])
     out.show()
     print(time.time()-start)
 
