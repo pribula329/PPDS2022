@@ -73,7 +73,6 @@ def main():
     out = out.reshape(128,128,3)
     out = out.astype('uint8')
     out = Image.fromarray(out)
-    out.save("out_stream.png")
     out.show()
     print(f'Total time: {t_end - t_start}')
 
