@@ -31,6 +31,12 @@ def main():
     start=time.time()
     image = np.array(Image.open("mini.png"))
     print(image.shape)
+
+    data = []
+    data_gpu = []
+    gpu_out = []
+    streams = []
+
     threadsperblock = (32, 32, 3)
     blockX = math.ceil(image.shape[0] / threadsperblock[0])
     blockY = math.ceil(image.shape[1] / threadsperblock[1])
